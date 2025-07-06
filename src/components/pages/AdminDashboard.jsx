@@ -2,13 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import authService from "@/services/api/authService";
-import contentService from "@/services/api/contentService";
-import userService from "@/services/api/userService";
-import mediaService from "@/services/api/mediaService";
-import formService from "@/services/api/formService";
-import settingsService from "@/services/api/settingsService";
-import analyticsService from "@/services/api/analyticsService";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import Error from "@/components/ui/Error";
@@ -16,6 +9,13 @@ import Contact from "@/components/pages/Contact";
 import Services from "@/components/pages/Services";
 import About from "@/components/pages/About";
 import FormField from "@/components/molecules/FormField";
+import userService from "@/services/api/userService";
+import authService from "@/services/api/authService";
+import contentService from "@/services/api/contentService";
+import mediaService from "@/services/api/mediaService";
+import analyticsService from "@/services/api/analyticsService";
+import formService from "@/services/api/formService";
+import settingsService from "@/services/api/settingsService";
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('hero');
   const [isSaving, setIsSaving] = useState(false);
@@ -215,18 +215,18 @@ const [users, setUsers] = useState([
       let result;
       switch (action) {
         case 'delete':
-          await userService.delete(userId);
-          setUsers(prev => prev.filter(u => u.Id !== userId));
+await userService.delete(userId);
+          setUsers(prev => prev.filter(u => u.id !== userId));
           toast.success('User deleted successfully');
           break;
         case 'updateRole':
-          result = await userService.updateUserRole(userId, data);
-          setUsers(prev => prev.map(u => u.Id === userId ? result : u));
+result = await userService.updateUserRole(userId, data);
+          setUsers(prev => prev.map(u => u.id === userId ? result : u));
           toast.success('User role updated successfully');
           break;
-        case 'updateStatus':
+case 'updateStatus':
           result = await userService.updateUserStatus(userId, data);
-          setUsers(prev => prev.map(u => u.Id === userId ? result : u));
+          setUsers(prev => prev.map(u => u.id === userId ? result : u));
           toast.success('User status updated successfully');
           break;
       }
@@ -244,9 +244,9 @@ const [users, setUsers] = useState([
   const handleMediaAction = async (action, mediaId, data = null) => {
     try {
       switch (action) {
-        case 'delete':
+case 'delete':
           await mediaService.delete(mediaId);
-          setMediaLibrary(prev => prev.filter(m => m.Id !== mediaId));
+          setMediaLibrary(prev => prev.filter(m => m.id !== mediaId));
           toast.success('Media deleted successfully');
           break;
         case 'upload':
@@ -270,14 +270,14 @@ const [users, setUsers] = useState([
     try {
       let result;
       switch (action) {
-        case 'updateStatus':
+case 'updateStatus':
           result = await formService.updateStatus(formId, data);
-          setFormSubmissions(prev => prev.map(f => f.Id === formId ? result : f));
+          setFormSubmissions(prev => prev.map(f => f.id === formId ? result : f));
           toast.success('Form status updated successfully');
           break;
-        case 'delete':
+case 'delete':
           await formService.delete(formId);
-          setFormSubmissions(prev => prev.filter(f => f.Id !== formId));
+          setFormSubmissions(prev => prev.filter(f => f.id !== formId));
           toast.success('Form submission deleted successfully');
           break;
       }
@@ -617,10 +617,10 @@ const tabs = [
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
 <div className="space-y-3">
-                    {recentActivity.map((activity) => (
-                      <div key={activity.Id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                        <div className="bg-blue-100 p-2 rounded-full">
-                          <ApperIcon name="Activity" size={16} className="text-blue-600" />
+{recentActivity.map((activity) => (
+                       <div key={activity.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                         <div className="bg-blue-100 p-2 rounded-full">
+                           <ApperIcon name="Activity" size={16} className="text-blue-600" />
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900">{activity.action}</p>
@@ -827,16 +827,16 @@ const tabs = [
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
 <button
-                                onClick={() => handleUserAction('updateRole', user.Id, 'Editor')}
+                                onClick={() => handleUserAction('updateRole', user.id, 'Editor')}
                                 className="text-blue-600 hover:text-blue-900"
                                 title="Edit User"
                               >
                                 <ApperIcon name="Edit" size={16} />
                               </button>
                               <button 
-                                onClick={() => {
+onClick={() => {
                                   if (confirm('Are you sure you want to delete this user?')) {
-                                    handleUserAction('delete', user.Id);
+                                    handleUserAction('delete', user.id);
                                   }
                                 }}
                                 className="text-red-600 hover:text-red-900"
@@ -875,17 +875,16 @@ const tabs = [
                     <div className="aspect-square bg-gray-100 flex items-center justify-center">
                       <ApperIcon name={media.type === 'image' ? 'Image' : 'Video'} size={48} className="text-gray-400" />
                     </div>
-                    <div className="p-4">
+<div className="p-4">
                       <h4 className="text-sm font-medium text-gray-900 truncate">{media.name}</h4>
                       <p className="text-xs text-gray-500 mt-1">{media.size}</p>
                       <p className="text-xs text-gray-500">{media.uploadDate}</p>
                       <div className="flex justify-between items-center mt-3">
-<div className="flex justify-between items-center mt-3">
                         <Button variant="outline" size="sm">View</Button>
                         <button 
-                          onClick={() => {
+onClick={() => {
                             if (confirm('Are you sure you want to delete this media?')) {
-                              handleMediaAction('delete', media.Id);
+                              handleMediaAction('delete', media.id);
                             }
                           }}
                           className="text-red-600 hover:text-red-800"
@@ -893,8 +892,8 @@ const tabs = [
                         >
                           <ApperIcon name="Trash" size={16} />
                         </button>
-</div>
-                  </div>
+                      </div>
+                    </div>
                 ))}
               </div>
             </motion.div>
@@ -954,17 +953,17 @@ const tabs = [
                               >
                                 <ApperIcon name="Eye" size={16} />
                               </button>
-                              <button 
-                                onClick={() => handleFormAction('updateStatus', submission.Id, 'Contacted')}
+<button 
+                                onClick={() => handleFormAction('updateStatus', submission.id, 'Contacted')}
                                 className="text-green-600 hover:text-green-900"
                                 title="Mark as Contacted"
                               >
                                 <ApperIcon name="Mail" size={16} />
                               </button>
-                              <button 
+<button 
                                 onClick={() => {
                                   if (confirm('Are you sure you want to delete this submission?')) {
-                                    handleFormAction('delete', submission.Id);
+                                    handleFormAction('delete', submission.id);
                                   }
                                 }}
                                 className="text-red-600 hover:text-red-900"
