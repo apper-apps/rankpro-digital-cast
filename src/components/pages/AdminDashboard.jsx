@@ -1,11 +1,21 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
-import Button from '@/components/atoms/Button';
-import FormField from '@/components/molecules/FormField';
-import ApperIcon from '@/components/ApperIcon';
-
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import authService from "@/services/api/authService";
+import contentService from "@/services/api/contentService";
+import userService from "@/services/api/userService";
+import mediaService from "@/services/api/mediaService";
+import formService from "@/services/api/formService";
+import settingsService from "@/services/api/settingsService";
+import analyticsService from "@/services/api/analyticsService";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Error from "@/components/ui/Error";
+import Contact from "@/components/pages/Contact";
+import Services from "@/components/pages/Services";
+import About from "@/components/pages/About";
+import FormField from "@/components/molecules/FormField";
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('hero');
   const [isSaving, setIsSaving] = useState(false);
@@ -94,28 +104,60 @@ const [content, setContent] = useState({
     }
   });
 
-  const [users] = useState([
+const [users, setUsers] = useState([
     { id: 1, name: 'Admin User', email: 'admin@rankpro.com', role: 'Administrator', status: 'Active', lastLogin: '2024-01-15 10:30 AM' },
     { id: 2, name: 'Content Manager', email: 'content@rankpro.com', role: 'Editor', status: 'Active', lastLogin: '2024-01-15 09:15 AM' },
     { id: 3, name: 'SEO Specialist', email: 'seo@rankpro.com', role: 'Contributor', status: 'Active', lastLogin: '2024-01-14 04:45 PM' }
   ]);
 
-  const [formSubmissions] = useState([
+  const [formSubmissions, setFormSubmissions] = useState([
     { id: 1, name: 'John Doe', email: 'john@example.com', service: 'SEO', message: 'Interested in SEO services', date: '2024-01-15', status: 'New' },
     { id: 2, name: 'Jane Smith', email: 'jane@example.com', service: 'PPC', message: 'Need help with Google Ads', date: '2024-01-14', status: 'Contacted' },
     { id: 3, name: 'Bob Wilson', email: 'bob@example.com', service: 'Web Design', message: 'Looking for website redesign', date: '2024-01-13', status: 'Quoted' }
   ]);
 
-  const [mediaLibrary] = useState([
+  const [mediaLibrary, setMediaLibrary] = useState([
     { id: 1, name: 'hero-background.jpg', type: 'image', size: '2.4 MB', url: '/images/hero-bg.jpg', uploadDate: '2024-01-10' },
     { id: 2, name: 'team-photo.jpg', type: 'image', size: '1.8 MB', url: '/images/team.jpg', uploadDate: '2024-01-09' },
     { id: 3, name: 'logo.png', type: 'image', size: '156 KB', url: '/images/logo.png', uploadDate: '2024-01-08' },
     { id: 4, name: 'company-video.mp4', type: 'video', size: '45.2 MB', url: '/videos/company.mp4', uploadDate: '2024-01-07' }
   ]);
 
+  const [analytics, setAnalytics] = useState({});
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  const loadInitialData = async () => {
+    setLoading(true);
+    try {
+      const [usersData, formsData, mediaData, analyticsData, activityData] = await Promise.all([
+        userService.getAll(),
+        formService.getAll(),
+        mediaService.getAll(),
+        analyticsService.getOverview(),
+        analyticsService.getRecentActivity(5)
+      ]);
+      
+      setUsers(usersData);
+      setFormSubmissions(formsData);
+      setMediaLibrary(mediaData);
+      setAnalytics(analyticsData);
+      setRecentActivity(activityData);
+    } catch (error) {
+      setError('Failed to load dashboard data');
+      toast.error('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogout = () => {
-    localStorage.removeItem('adminAuthenticated');
-    localStorage.removeItem('adminLoginTime');
+    authService.logout();
     toast.success('Logged out successfully');
     navigate('/admin-panel-2024');
   };
@@ -123,13 +165,130 @@ const [content, setContent] = useState({
   const handleSave = async (section) => {
     setIsSaving(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      let result;
+      switch (section.toLowerCase()) {
+        case 'hero':
+          result = await contentService.updateHeroContent(content.hero);
+          break;
+        case 'services':
+          result = await Promise.all(
+            Object.entries(content.services).map(([key, service]) =>
+              contentService.updateServiceContent(key, service)
+            )
+          );
+          break;
+        case 'about':
+          result = await contentService.updateAboutContent(content.about);
+          break;
+        case 'contact':
+          result = await settingsService.updateContactInfo(content.contact);
+          break;
+        case 'cta':
+          result = await contentService.updateCtaContent(content.cta);
+          break;
+        case 'seo':
+          result = await settingsService.updateSeoSettings(content.settings);
+          break;
+        case 'settings':
+          result = await settingsService.updateSettings(content.settings);
+          break;
+        default:
+          throw new Error('Unknown section');
+      }
+      
+      await analyticsService.addActivity({
+        action: `${section} content updated`,
+        type: 'update',
+        user: authService.getCurrentUser()?.username || 'Admin'
+      });
+      
       toast.success(`${section} content updated successfully!`);
     } catch (error) {
-      toast.error('Failed to save changes');
+      toast.error(`Failed to save ${section.toLowerCase()} changes`);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleUserAction = async (action, userId, data = null) => {
+    try {
+      let result;
+      switch (action) {
+        case 'delete':
+          await userService.delete(userId);
+          setUsers(prev => prev.filter(u => u.Id !== userId));
+          toast.success('User deleted successfully');
+          break;
+        case 'updateRole':
+          result = await userService.updateUserRole(userId, data);
+          setUsers(prev => prev.map(u => u.Id === userId ? result : u));
+          toast.success('User role updated successfully');
+          break;
+        case 'updateStatus':
+          result = await userService.updateUserStatus(userId, data);
+          setUsers(prev => prev.map(u => u.Id === userId ? result : u));
+          toast.success('User status updated successfully');
+          break;
+      }
+      
+      await analyticsService.addActivity({
+        action: `User ${action}`,
+        type: 'user',
+        user: authService.getCurrentUser()?.username || 'Admin'
+      });
+    } catch (error) {
+      toast.error(`Failed to ${action} user`);
+    }
+  };
+
+  const handleMediaAction = async (action, mediaId, data = null) => {
+    try {
+      switch (action) {
+        case 'delete':
+          await mediaService.delete(mediaId);
+          setMediaLibrary(prev => prev.filter(m => m.Id !== mediaId));
+          toast.success('Media deleted successfully');
+          break;
+        case 'upload':
+          const newMedia = await mediaService.upload(data);
+          setMediaLibrary(prev => [newMedia, ...prev]);
+          toast.success('Media uploaded successfully');
+          break;
+      }
+      
+      await analyticsService.addActivity({
+        action: `Media ${action}`,
+        type: 'media',
+        user: authService.getCurrentUser()?.username || 'Admin'
+      });
+    } catch (error) {
+      toast.error(`Failed to ${action} media`);
+    }
+  };
+
+  const handleFormAction = async (action, formId, data = null) => {
+    try {
+      let result;
+      switch (action) {
+        case 'updateStatus':
+          result = await formService.updateStatus(formId, data);
+          setFormSubmissions(prev => prev.map(f => f.Id === formId ? result : f));
+          toast.success('Form status updated successfully');
+          break;
+        case 'delete':
+          await formService.delete(formId);
+          setFormSubmissions(prev => prev.filter(f => f.Id !== formId));
+          toast.success('Form submission deleted successfully');
+          break;
+      }
+      
+      await analyticsService.addActivity({
+        action: `Form submission ${action}`,
+        type: 'form',
+        user: authService.getCurrentUser()?.username || 'Admin'
+      });
+    } catch (error) {
+      toast.error(`Failed to ${action} form submission`);
     }
   };
 
@@ -389,72 +548,86 @@ const tabs = [
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Page Views</p>
-                      <p className="text-2xl font-bold text-gray-900">12,547</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {analytics.pageViews?.current?.toLocaleString() || '12,547'}
+                      </p>
                     </div>
                     <div className="bg-blue-100 p-3 rounded-full">
                       <ApperIcon name="Eye" size={24} className="text-blue-600" />
                     </div>
                   </div>
-                  <p className="text-sm text-green-600 mt-2">+12% from last month</p>
+                  <p className={`text-sm mt-2 ${analytics.pageViews?.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {analytics.pageViews?.change >= 0 ? '+' : ''}{analytics.pageViews?.change || 12}% from last month
+                  </p>
                 </div>
                 
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Unique Visitors</p>
-                      <p className="text-2xl font-bold text-gray-900">8,432</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {analytics.uniqueVisitors?.current?.toLocaleString() || '8,432'}
+                      </p>
                     </div>
                     <div className="bg-green-100 p-3 rounded-full">
                       <ApperIcon name="Users" size={24} className="text-green-600" />
                     </div>
                   </div>
-                  <p className="text-sm text-green-600 mt-2">+18% from last month</p>
+                  <p className={`text-sm mt-2 ${analytics.uniqueVisitors?.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {analytics.uniqueVisitors?.change >= 0 ? '+' : ''}{analytics.uniqueVisitors?.change || 18}% from last month
+                  </p>
                 </div>
                 
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Contact Forms</p>
-                      <p className="text-2xl font-bold text-gray-900">156</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {analytics.contactForms?.current || formSubmissions.length || '156'}
+                      </p>
                     </div>
                     <div className="bg-purple-100 p-3 rounded-full">
                       <ApperIcon name="Mail" size={24} className="text-purple-600" />
                     </div>
                   </div>
-                  <p className="text-sm text-green-600 mt-2">+25% from last month</p>
+                  <p className={`text-sm mt-2 ${analytics.contactForms?.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {analytics.contactForms?.change >= 0 ? '+' : ''}{analytics.contactForms?.change || 25}% from last month
+                  </p>
                 </div>
                 
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Bounce Rate</p>
-                      <p className="text-2xl font-bold text-gray-900">32%</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {analytics.bounceRate?.current || '32'}%
+                      </p>
                     </div>
                     <div className="bg-orange-100 p-3 rounded-full">
                       <ApperIcon name="TrendingDown" size={24} className="text-orange-600" />
                     </div>
                   </div>
-                  <p className="text-sm text-green-600 mt-2">-8% from last month</p>
+                  <p className={`text-sm mt-2 ${analytics.bounceRate?.change <= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {analytics.bounceRate?.change || -8}% from last month
+                  </p>
                 </div>
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-                  <div className="space-y-3">
-                    {[
-                      { action: 'New contact form submission', time: '2 minutes ago', type: 'contact' },
-                      { action: 'Page content updated', time: '1 hour ago', type: 'update' },
-                      { action: 'New visitor from Google', time: '2 hours ago', type: 'visitor' },
-                      { action: 'Service page viewed', time: '3 hours ago', type: 'view' }
-                    ].map((activity, index) => (
-                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+<div className="space-y-3">
+                    {recentActivity.map((activity) => (
+                      <div key={activity.Id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                         <div className="bg-blue-100 p-2 rounded-full">
                           <ApperIcon name="Activity" size={16} className="text-blue-600" />
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900">{activity.action}</p>
                           <p className="text-xs text-gray-500">{activity.time}</p>
+                          {activity.user && (
+                            <p className="text-xs text-gray-400">by {activity.user}</p>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -653,10 +826,22 @@ const tabs = [
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
-                              <button className="text-blue-600 hover:text-blue-900">
+<button
+                                onClick={() => handleUserAction('updateRole', user.Id, 'Editor')}
+                                className="text-blue-600 hover:text-blue-900"
+                                title="Edit User"
+                              >
                                 <ApperIcon name="Edit" size={16} />
                               </button>
-                              <button className="text-red-600 hover:text-red-900">
+                              <button 
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to delete this user?')) {
+                                    handleUserAction('delete', user.Id);
+                                  }
+                                }}
+                                className="text-red-600 hover:text-red-900"
+                                title="Delete User"
+                              >
                                 <ApperIcon name="Trash" size={16} />
                               </button>
                             </div>
@@ -695,12 +880,20 @@ const tabs = [
                       <p className="text-xs text-gray-500 mt-1">{media.size}</p>
                       <p className="text-xs text-gray-500">{media.uploadDate}</p>
                       <div className="flex justify-between items-center mt-3">
+<div className="flex justify-between items-center mt-3">
                         <Button variant="outline" size="sm">View</Button>
-                        <button className="text-red-600 hover:text-red-800">
+                        <button 
+                          onClick={() => {
+                            if (confirm('Are you sure you want to delete this media?')) {
+                              handleMediaAction('delete', media.Id);
+                            }
+                          }}
+                          className="text-red-600 hover:text-red-800"
+                          title="Delete Media"
+                        >
                           <ApperIcon name="Trash" size={16} />
                         </button>
-                      </div>
-                    </div>
+</div>
                   </div>
                 ))}
               </div>
@@ -754,14 +947,29 @@ const tabs = [
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-2">
-                              <button className="text-blue-600 hover:text-blue-900">
+<div className="flex space-x-2">
+                              <button 
+                                className="text-blue-600 hover:text-blue-900"
+                                title="View Submission"
+                              >
                                 <ApperIcon name="Eye" size={16} />
                               </button>
-                              <button className="text-green-600 hover:text-green-900">
+                              <button 
+                                onClick={() => handleFormAction('updateStatus', submission.Id, 'Contacted')}
+                                className="text-green-600 hover:text-green-900"
+                                title="Mark as Contacted"
+                              >
                                 <ApperIcon name="Mail" size={16} />
                               </button>
-                              <button className="text-red-600 hover:text-red-900">
+                              <button 
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to delete this submission?')) {
+                                    handleFormAction('delete', submission.Id);
+                                  }
+                                }}
+                                className="text-red-600 hover:text-red-900"
+                                title="Delete Submission"
+                              >
                                 <ApperIcon name="Trash" size={16} />
                               </button>
                             </div>

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import Button from '@/components/atoms/Button';
 import FormField from '@/components/molecules/FormField';
 import ApperIcon from '@/components/ApperIcon';
+import authService from '@/services/api/authService';
 
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -12,13 +13,14 @@ const AdminLogin = () => {
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  // Admin credentials
-  const ADMIN_CREDENTIALS = {
-    username: 'admin@rankpro',
-    password: 'RankPro2024!'
-  };
+  useEffect(() => {
+    // Check if already authenticated
+    if (authService.isAuthenticated()) {
+      navigate('/admin-panel-2024/dashboard');
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,25 +30,16 @@ const AdminLogin = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (credentials.username === ADMIN_CREDENTIALS.username && 
-          credentials.password === ADMIN_CREDENTIALS.password) {
-        localStorage.setItem('adminAuthenticated', 'true');
-        localStorage.setItem('adminLoginTime', new Date().toISOString());
-        toast.success('Login successful!');
-        navigate('/admin-panel-2024/dashboard');
-      } else {
-        toast.error('Invalid credentials. Please try again.');
-      }
+      await authService.login(credentials);
+      toast.success('Login successful!');
+      navigate('/admin-panel-2024/dashboard');
     } catch (error) {
-      toast.error('Login failed. Please try again.');
+      toast.error(error.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
