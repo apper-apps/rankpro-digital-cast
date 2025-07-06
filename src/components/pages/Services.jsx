@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
-
 const Services = () => {
-  const services = [
+const services = [
     {
       icon: 'Search',
       title: 'SEO Optimization',
@@ -16,7 +16,8 @@ const Services = () => {
         'Monthly performance reports and insights'
       ],
       price: 'Starting at $1,500/month',
-      color: 'from-blue-500 to-blue-600'
+      color: 'from-blue-500 to-blue-600',
+      slug: 'seo-optimization'
     },
     {
       icon: 'MousePointer',
@@ -30,7 +31,8 @@ const Services = () => {
         'Real-time performance monitoring'
       ],
       price: 'Starting at $2,000/month',
-      color: 'from-green-500 to-green-600'
+      color: 'from-green-500 to-green-600',
+      slug: 'ppc-management'
     },
     {
       icon: 'Palette',
@@ -44,7 +46,8 @@ const Services = () => {
         'Content management system integration'
       ],
       price: 'Starting at $5,000 per project',
-      color: 'from-purple-500 to-purple-600'
+      color: 'from-purple-500 to-purple-600',
+      slug: 'web-design-development'
     },
     {
       icon: 'FileText',
@@ -58,7 +61,8 @@ const Services = () => {
         'Brand storytelling and messaging'
       ],
       price: 'Starting at $800/month',
-      color: 'from-orange-500 to-orange-600'
+      color: 'from-orange-500 to-orange-600',
+      slug: 'content-marketing'
     },
     {
       icon: 'Users',
@@ -72,7 +76,8 @@ const Services = () => {
         'Performance analytics and reporting'
       ],
       price: 'Starting at $1,200/month',
-      color: 'from-pink-500 to-pink-600'
+      color: 'from-pink-500 to-pink-600',
+      slug: 'social-media-marketing'
     },
     {
       icon: 'BarChart',
@@ -86,7 +91,8 @@ const Services = () => {
         'Monthly strategy review sessions'
       ],
       price: 'Starting at $500/month',
-      color: 'from-indigo-500 to-indigo-600'
+      color: 'from-indigo-500 to-indigo-600',
+      slug: 'analytics-reporting'
     }
   ];
 
@@ -197,11 +203,13 @@ const Services = () => {
                   
                   <div className="border-t border-gray-200 pt-6">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-2xl font-bold text-gray-900">{service.price}</span>
+<span className="text-2xl font-bold text-gray-900">{service.price}</span>
                     </div>
-                    <Button variant="primary" className="w-full">
-                      Get Started
-                    </Button>
+                    <Link to={`/services/${service.slug}`}>
+                      <Button variant="primary" className="w-full">
+                        Learn More
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>

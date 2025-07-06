@@ -8,9 +8,20 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const navigation = [
+const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'Services', href: '/services' },
+    { 
+      name: 'Services', 
+      href: '/services',
+      dropdown: [
+        { name: 'SEO Optimization', href: '/services/seo-optimization' },
+        { name: 'PPC Management', href: '/services/ppc-management' },
+        { name: 'Web Design & Development', href: '/services/web-design-development' },
+        { name: 'Content Marketing', href: '/services/content-marketing' },
+        { name: 'Social Media Marketing', href: '/services/social-media-marketing' },
+        { name: 'Analytics & Reporting', href: '/services/analytics-reporting' },
+      ]
+    },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -30,19 +41,40 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+<div className="hidden md:flex items-center space-x-8">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`text-sm font-medium transition-colors duration-200 hover:text-primary ${
-                  isActive(item.href)
-                    ? 'text-primary border-b-2 border-primary pb-1'
-                    : 'text-gray-700'
-                }`}
-              >
-                {item.name}
-              </Link>
+              <div key={item.name} className="relative group">
+                <Link
+                  to={item.href}
+                  className={`text-sm font-medium transition-colors duration-200 hover:text-primary flex items-center gap-1 ${
+                    isActive(item.href) || (item.dropdown && item.dropdown.some(subItem => isActive(subItem.href)))
+                      ? 'text-primary border-b-2 border-primary pb-1'
+                      : 'text-gray-700'
+                  }`}
+                >
+                  {item.name}
+                  {item.dropdown && <ApperIcon name="ChevronDown" size={16} className="group-hover:rotate-180 transition-transform" />}
+                </Link>
+                {item.dropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="p-2">
+                      {item.dropdown.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          to={subItem.href}
+                          className={`block px-4 py-2 text-sm rounded-lg transition-colors duration-200 ${
+                            isActive(subItem.href)
+                              ? 'text-primary bg-blue-50'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
             <Button size="sm" variant="primary">
               Get Started
@@ -68,20 +100,39 @@ const Navigation = () => {
               transition={{ duration: 0.2 }}
               className="md:hidden py-4 border-t border-gray-100"
             >
-              <div className="space-y-2">
+<div className="space-y-2">
                 {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                      isActive(item.href)
-                        ? 'text-primary bg-blue-50'
-                        : 'text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
+                  <div key={item.name}>
+                    <Link
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                        isActive(item.href) || (item.dropdown && item.dropdown.some(subItem => isActive(subItem.href)))
+                          ? 'text-primary bg-blue-50'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                    {item.dropdown && (
+                      <div className="ml-4 mt-2 space-y-1">
+                        {item.dropdown.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            to={subItem.href}
+                            onClick={() => setIsOpen(false)}
+                            className={`block px-3 py-2 text-xs rounded-lg transition-colors duration-200 ${
+                              isActive(subItem.href)
+                                ? 'text-primary bg-blue-50'
+                                : 'text-gray-600 hover:bg-gray-50'
+                            }`}
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
                 <div className="pt-2">
                   <Button size="sm" variant="primary" className="w-full">
