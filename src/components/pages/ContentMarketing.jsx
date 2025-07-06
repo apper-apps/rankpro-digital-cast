@@ -107,10 +107,10 @@ const ContentMarketing = () => {
             >
               <div className="bg-white/10 backdrop-blur-sm w-20 h-20 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
 <ApperIcon name="FileText" size={40} className="text-white" />
-              </div>
-<h1 className="text-4xl md:text-6xl font-bold mb-6">
-                {content.title}
-              </h1>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+              {content.title}
+            </h1>
               <p className="text-xl text-orange-100 mb-8 max-w-2xl lg:max-w-none">
                 {content.description}
               </p>

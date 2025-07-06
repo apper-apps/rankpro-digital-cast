@@ -98,10 +98,10 @@ const SeoOptimization = () => {
             >
               <div className="bg-white/10 backdrop-blur-sm w-20 h-20 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
 <ApperIcon name="Search" size={40} className="text-white" />
-              </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                SEO Optimization Services
-              </h1>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+              SEO Optimization Services
+            </h1>
               <p className="text-xl text-blue-100 mb-8 max-w-2xl lg:max-w-none">
                 Dominate search engine results with our comprehensive SEO strategies that drive organic traffic and increase your online visibility.
               </p>

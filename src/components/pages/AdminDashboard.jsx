@@ -411,11 +411,11 @@ const tabs = [
             <div className="flex items-center space-x-4">
               <div className="bg-gradient-to-r from-primary to-secondary p-2 rounded-lg">
                 <ApperIcon name="Shield" size={24} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+<div>
+                <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
                 <p className="text-sm text-gray-600">RankPro Digital Content Management</p>
               </div>
+            </div>
             </div>
             <Button onClick={handleLogout} variant="outline" size="sm">
               <ApperIcon name="LogOut" size={16} className="mr-2" />
@@ -452,11 +452,11 @@ const tabs = [
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-4xl"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Hero Section Content</h2>
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="space-y-6">
+className="max-w-4xl"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6">Hero Section Content</h2>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="space-y-6">
                   <FormField
                     label="Main Title"
                     name="title"
@@ -505,11 +505,11 @@ const tabs = [
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-4xl"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Services Content</h2>
-              <div className="space-y-6">
-                {Object.entries(content.services).map(([key, service]) => (
+className="max-w-4xl"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6">Services Content</h2>
+            <div className="space-y-6">
+              {Object.entries(content.services).map(([key, service]) => (
                   <div key={key} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 capitalize">
                       {key === 'webDesign' ? 'Web Design' : key.toUpperCase()}
@@ -558,11 +558,11 @@ const tabs = [
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-4xl"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="space-y-6">
+className="max-w-4xl"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6">Contact Information</h2>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="space-y-6">
                   <FormField
                     label="Phone Number"
                     name="phone"
@@ -614,11 +614,11 @@ const tabs = [
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-6xl"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard Overview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+className="max-w-6xl"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6">Dashboard Overview</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Page Views</p>
@@ -751,11 +751,11 @@ const tabs = [
               animate={{ opacity: 1, y: 0 }}
               className="max-w-7xl"
             >
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900">Published Pages Management</h2>
-                  <p className="text-gray-600 mt-2">Manage all published pages and their content in real-time</p>
-                </div>
+<div>
+                <h2 className="text-3xl font-bold text-white">Published Pages Management</h2>
+                <p className="text-gray-600 mt-2">Manage all published pages and their content in real-time</p>
+              </div>
+              <div className="flex gap-3">
                 <div className="flex gap-3">
                   <Button variant="outline" className="flex items-center gap-2">
                     <ApperIcon name="Eye" size={16} />
@@ -1345,11 +1345,11 @@ const tabs = [
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="max-w-6xl"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
-                <Button variant="primary" className="flex items-center gap-2">
-                  <ApperIcon name="UserPlus" size={16} />
+className="max-w-6xl"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">User Management</h2>
+              <Button variant="primary" className="flex items-center gap-2">
                   Add New User
                 </Button>
               </div>
@@ -1429,11 +1429,11 @@ onClick={() => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="max-w-6xl"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Media Library</h2>
-                <Button variant="primary" className="flex items-center gap-2">
-                  <ApperIcon name="Upload" size={16} />
+className="max-w-6xl"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">Media Library</h2>
+              <Button variant="primary" className="flex items-center gap-2">
                   Upload Media
                 </Button>
               </div>
@@ -1474,11 +1474,11 @@ onClick={() => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-6xl"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Form Submissions</h2>
+className="max-w-6xl"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6">Form Submissions</h2>
 
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -1557,11 +1557,11 @@ onClick={() => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-4xl"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">SEO Settings</h2>
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="space-y-6">
+className="max-w-4xl"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6">SEO Settings</h2>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="space-y-6">
                   <FormField
                     label="Meta Title"
                     value={content.settings.seoTitle}
@@ -1612,11 +1612,11 @@ onClick={() => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-4xl"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Site Settings</h2>
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="space-y-6">
+className="max-w-4xl"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6">Site Settings</h2>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="space-y-6">
                   <FormField
                     label="Site Name"
                     value={content.settings.siteName}

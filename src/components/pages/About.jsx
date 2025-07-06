@@ -100,11 +100,11 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-<h1 className="text-4xl md:text-6xl font-bold mb-6">
-              {content.title}
-            </h1>
+className="max-w-4xl mx-auto text-center"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+            {content.title}
+          </h1>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               {content.description}
             </p>
@@ -119,11 +119,11 @@ const About = () => {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                Our Story
-              </h2>
+transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Our Story
+          </h2>
               <p className="text-lg text-gray-600 mb-6">
                 Founded in 2019, RankPro Digital emerged from a simple belief: every business deserves 
                 to succeed online. We started as a small team of digital marketing enthusiasts who were 
@@ -172,11 +172,11 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Our Values
-            </h2>
+className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Our Values
+          </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               These core values guide everything we do and shape how we work with our clients.
             </p>
@@ -209,11 +209,11 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Meet Our Team
-            </h2>
+className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Meet Our Team
+          </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Our talented team brings together diverse expertise and a shared passion for helping businesses grow.
             </p>
@@ -260,11 +260,11 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Work with Us?
-            </h2>
+className="max-w-4xl mx-auto text-center"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Ready to Work with Us?
+          </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               Let's discuss how we can help you achieve your digital marketing goals and grow your business.
             </p>

@@ -163,11 +163,11 @@ const services = [
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-center lg:text-left"
-            >
-<h1 className="text-4xl md:text-6xl font-bold mb-6">
-                {content.title}
-              </h1>
+className="text-center lg:text-left"
+          >
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+              {content.title}
+            </h1>
               <p className="text-xl text-blue-100 mb-8 max-w-2xl lg:max-w-none">
                 {content.description}
               </p>
@@ -207,11 +207,11 @@ const services = [
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Our Service Offerings
-            </h2>
+className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Our Service Offerings
+          </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We offer a comprehensive suite of digital marketing services tailored to help 
               your business succeed in the digital landscape.
@@ -272,11 +272,11 @@ const services = [
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Our Proven Process
-            </h2>
+className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Our Proven Process
+          </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               We follow a systematic approach to ensure your digital marketing campaigns deliver maximum results.
             </p>
@@ -335,11 +335,11 @@ const services = [
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Accelerate Your Growth?
-            </h2>
+className="max-w-4xl mx-auto text-center"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Ready to Accelerate Your Growth?
+          </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               Let's discuss how our digital marketing services can help you achieve your business objectives.
             </p>
