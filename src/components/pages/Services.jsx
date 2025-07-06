@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
+import ContactForm from '@/components/organisms/ContactForm';
 const Services = () => {
 const services = [
     {
@@ -119,37 +120,50 @@ const services = [
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+{/* Hero Section */}
       <section className="bg-gradient-to-br from-primary via-secondary to-blue-900 text-white py-20">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Digital Marketing Services
-            </h1>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Comprehensive digital marketing solutions designed to grow your business, 
-              increase your online presence, and drive measurable results.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent mb-2">500+</div>
-                <div className="text-blue-200">Projects Completed</div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Hero Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
+            >
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                Digital Marketing Services
+              </h1>
+              <p className="text-xl text-blue-100 mb-8 max-w-2xl lg:max-w-none">
+                Comprehensive digital marketing solutions designed to grow your business, 
+                increase your online presence, and drive measurable results.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto lg:mx-0">
+                <div className="text-center lg:text-left">
+                  <div className="text-3xl font-bold text-accent mb-2">500+</div>
+                  <div className="text-blue-200">Projects Completed</div>
+                </div>
+                <div className="text-center lg:text-left">
+                  <div className="text-3xl font-bold text-accent mb-2">98%</div>
+                  <div className="text-blue-200">Client Satisfaction</div>
+                </div>
+                <div className="text-center lg:text-left">
+                  <div className="text-3xl font-bold text-accent mb-2">5+</div>
+                  <div className="text-blue-200">Years Experience</div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent mb-2">98%</div>
-                <div className="text-blue-200">Client Satisfaction</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent mb-2">5+</div>
-                <div className="text-blue-200">Years Experience</div>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+
+            {/* Embedded Contact Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="lg:max-w-lg mx-auto w-full"
+            >
+              <ContactForm embedded />
+            </motion.div>
+          </div>
         </div>
       </section>
 

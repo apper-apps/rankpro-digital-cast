@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import FormField from '@/components/molecules/FormField';
 import ApperIcon from '@/components/ApperIcon';
 
-const ContactForm = () => {
+const ContactForm = ({ embedded = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -63,6 +63,84 @@ const ContactForm = () => {
     }
   };
 
+if (embedded) {
+    return (
+      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-bold text-white mb-2">
+            Get Your Free Strategy Session
+          </h3>
+          <p className="text-blue-100 text-sm">
+            Ready to grow your business? Let's discuss your goals.
+          </p>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <FormField
+              label="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Enter your full name"
+              className="text-white placeholder-blue-200"
+            />
+            <FormField
+              label="Email Address"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="Enter your email"
+              className="text-white placeholder-blue-200"
+            />
+            <FormField
+              label="Phone Number"
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Enter your phone number"
+              className="text-white placeholder-blue-200"
+            />
+            <FormField
+              label="Service Interested In"
+              name="service"
+              type="select"
+              value={formData.service}
+              onChange={handleChange}
+              required
+              className="text-gray-900"
+            >
+              {services.map(service => (
+                <option key={service.value} value={service.value}>
+                  {service.label}
+                </option>
+              ))}
+            </FormField>
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            variant="accent"
+            loading={isSubmitting}
+            className="w-full flex items-center justify-center gap-2"
+          >
+            {isSubmitting ? 'Sending...' : (
+              <>
+                <ApperIcon name="Send" size={20} />
+                Get Free Analysis
+              </>
+            )}
+          </Button>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -80,7 +158,6 @@ const ContactForm = () => {
               Ready to grow your business? Let's discuss how our digital marketing services can help you achieve your goals.
             </p>
           </motion.div>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Info */}
             <motion.div
