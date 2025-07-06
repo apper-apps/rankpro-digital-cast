@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
-
+import ContactForm from '@/components/organisms/ContactForm';
 const SeoOptimization = () => {
   const features = [
     {
@@ -87,34 +87,45 @@ const SeoOptimization = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary via-secondary to-blue-900 text-white py-20">
+<section className="bg-gradient-to-br from-primary via-secondary to-blue-900 text-white py-20">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <div className="bg-white/10 backdrop-blur-sm w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ApperIcon name="Search" size={40} className="text-white" />
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              SEO Optimization Services
-            </h1>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Dominate search engine results with our comprehensive SEO strategies that drive organic traffic and increase your online visibility.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="accent" className="flex items-center gap-2">
-                <ApperIcon name="Calendar" size={20} />
-                Get Free SEO Audit
-              </Button>
-              <Button size="lg" variant="secondary" className="flex items-center gap-2">
-                <ApperIcon name="Phone" size={20} />
-                Call (555) 123-4567
-              </Button>
-            </div>
-          </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
+            >
+              <div className="bg-white/10 backdrop-blur-sm w-20 h-20 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
+<ApperIcon name="Search" size={40} className="text-white" />
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                SEO Optimization Services
+              </h1>
+              <p className="text-xl text-blue-100 mb-8 max-w-2xl lg:max-w-none">
+                Dominate search engine results with our comprehensive SEO strategies that drive organic traffic and increase your online visibility.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button size="lg" variant="accent" className="flex items-center gap-2">
+                  <ApperIcon name="Calendar" size={20} />
+                  Get Free SEO Audit
+                </Button>
+                <Button size="lg" variant="secondary" className="flex items-center gap-2">
+                  <ApperIcon name="Phone" size={20} />
+                  Call (555) 123-4567
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="lg:max-w-lg mx-auto w-full"
+            >
+              <ContactForm embedded />
+            </motion.div>
+          </div>
         </div>
       </section>
 

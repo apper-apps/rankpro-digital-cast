@@ -81,33 +81,32 @@ if (embedded) {
               label="Full Name"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+onChange={handleChange}
               required
               placeholder="Enter your full name"
-              className="text-white placeholder-blue-200"
+              className="text-gray-900 placeholder-blue-200"
             />
             <FormField
               label="Email Address"
               name="email"
               type="email"
               value={formData.email}
-              onChange={handleChange}
+onChange={handleChange}
               required
               placeholder="Enter your email"
-              className="text-white placeholder-blue-200"
+              className="text-gray-900 placeholder-blue-200"
             />
             <FormField
               label="Phone Number"
               name="phone"
               type="tel"
               value={formData.phone}
-              onChange={handleChange}
+onChange={handleChange}
               placeholder="Enter your phone number"
-              className="text-white placeholder-blue-200"
+              className="text-gray-900 placeholder-blue-200"
             />
             <FormField
               label="Service Interested In"
-              name="service"
               type="select"
               value={formData.service}
               onChange={handleChange}
