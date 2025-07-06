@@ -1,9 +1,17 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
 import ContactForm from '@/components/organisms/ContactForm';
+
 const Services = () => {
+  const location = useLocation();
+
+  // Scroll to top when component mounts or location changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location]);
 const services = [
     {
       icon: 'Search',
