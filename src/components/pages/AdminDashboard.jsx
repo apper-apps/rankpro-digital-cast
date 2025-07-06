@@ -90,6 +90,48 @@ const [content, setContent] = useState({
       address: '123 Business Ave, Suite 100\nToronto, ON M5V 3A8',
       hours: 'Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM'
     },
+    pages: {
+      home: {
+        heroTitle: 'Dominate Search Results with',
+        heroDescription: 'Transform your online presence with our data-driven SEO, PPC, and web design strategies. We deliver measurable results that grow your business.',
+        status: 'published'
+      },
+      services: {
+        title: 'Digital Marketing Services',
+        description: 'Comprehensive digital marketing solutions designed to grow your business, increase your online presence, and drive measurable results.',
+        status: 'published'
+      },
+      seo: {
+        title: 'SEO Optimization Services',
+        description: 'Dominate search engine results with our comprehensive SEO strategies that drive organic traffic and increase your online visibility.',
+        status: 'published'
+      },
+      ppc: {
+        title: 'PPC Management Services',
+        description: 'Maximize your ROI with expertly managed pay-per-click campaigns across Google Ads, Facebook, and other platforms.',
+        status: 'published'
+      },
+      webDesign: {
+        title: 'Web Design & Development',
+        description: 'Create stunning, conversion-focused websites that provide exceptional user experiences and drive business growth.',
+        status: 'published'
+      },
+      contentMarketing: {
+        title: 'Content Marketing Services',
+        description: 'Engage your audience with compelling content that builds brand authority and drives conversions.',
+        status: 'published'
+      },
+      socialMedia: {
+        title: 'Social Media Marketing',
+        description: 'Build meaningful connections with your audience through strategic social media marketing and community management.',
+        status: 'published'
+      },
+      analytics: {
+        title: 'Analytics & Reporting',
+        description: 'Make data-driven decisions with comprehensive analytics, tracking, and performance reporting.',
+        status: 'published'
+      }
+    },
     settings: {
       siteName: 'RankPro Digital',
       siteTagline: 'Premier Digital Marketing Agency',
@@ -313,6 +355,38 @@ case 'delete':
         }
       }
     }));
+};
+
+  const handlePageContentChange = (page, field, value) => {
+    setContent(prev => ({
+      ...prev,
+      pages: {
+        ...prev.pages,
+        [page]: {
+          ...prev.pages[page],
+          [field]: value
+        }
+      }
+    }));
+  };
+
+  const handleSavePage = async (pageKey) => {
+    setIsSaving(true);
+    try {
+      const result = await contentService.updatePageContent(pageKey, content.pages[pageKey]);
+      
+      await analyticsService.addActivity({
+        action: `${pageKey} page content updated`,
+        type: 'update',
+        user: authService.getCurrentUser()?.username || 'Admin'
+      });
+      
+      toast.success(`${pageKey} page updated successfully!`);
+    } catch (error) {
+      toast.error(`Failed to save ${pageKey} page changes`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
 const tabs = [
@@ -671,100 +745,595 @@ const tabs = [
             </motion.div>
           )}
 
-          {activeTab === 'pages' && (
+{activeTab === 'pages' && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-6xl"
+              className="max-w-7xl"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Pages Management</h2>
-                <Button variant="primary" className="flex items-center gap-2">
-                  <ApperIcon name="Plus" size={16} />
-                  Add New Page
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* About Page */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">About Page</h3>
-                  <div className="space-y-4">
-                    <FormField
-                      label="Page Title"
-                      value={content.about.title}
-                      onChange={(e) => handleContentChange('about', 'title', e.target.value)}
-                    />
-                    <FormField
-                      label="Subtitle"
-                      value={content.about.subtitle}
-                      onChange={(e) => handleContentChange('about', 'subtitle', e.target.value)}
-                    />
-                    <FormField
-                      label="Description"
-                      type="textarea"
-                      rows={3}
-                      value={content.about.description}
-                      onChange={(e) => handleContentChange('about', 'description', e.target.value)}
-                    />
-                    <Button onClick={() => handleSave('About')} loading={isSaving} variant="primary" size="sm">
-                      Update About Page
-                    </Button>
-                  </div>
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900">Published Pages Management</h2>
+                  <p className="text-gray-600 mt-2">Manage all published pages and their content in real-time</p>
                 </div>
-
-                {/* Testimonials */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Testimonials</h3>
-                  <div className="space-y-3 max-h-64 overflow-y-auto">
-                    {content.testimonials.map((testimonial, index) => (
-                      <div key={testimonial.id} className="border border-gray-200 rounded-lg p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-sm">{testimonial.name}</span>
-                          <div className="flex space-x-1">
-                            <button className="text-blue-600 hover:text-blue-800">
-                              <ApperIcon name="Edit" size={14} />
-                            </button>
-                            <button className="text-red-600 hover:text-red-800">
-                              <ApperIcon name="Trash" size={14} />
-                            </button>
-                          </div>
-                        </div>
-                        <p className="text-xs text-gray-600">{testimonial.company}</p>
-                        <p className="text-xs text-gray-700 mt-1">{testimonial.content.substring(0, 50)}...</p>
-                      </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" size="sm" className="w-full mt-3">
-                    <ApperIcon name="Plus" size={14} className="mr-1" />
-                    Add Testimonial
+                <div className="flex gap-3">
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <ApperIcon name="Eye" size={16} />
+                    Preview Site
+                  </Button>
+                  <Button variant="primary" className="flex items-center gap-2">
+                    <ApperIcon name="Plus" size={16} />
+                    Add New Page
                   </Button>
                 </div>
+              </div>
 
-                {/* CTA Section */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Call-to-Action</h3>
-                  <div className="space-y-4">
-                    <FormField
-                      label="CTA Title"
-                      value={content.cta.title}
-                      onChange={(e) => handleContentChange('cta', 'title', e.target.value)}
-                    />
-                    <FormField
-                      label="Description"
-                      type="textarea"
-                      rows={2}
-                      value={content.cta.description}
-                      onChange={(e) => handleContentChange('cta', 'description', e.target.value)}
-                    />
-                    <FormField
-                      label="Button Text"
-                      value={content.cta.buttonText}
-                      onChange={(e) => handleContentChange('cta', 'buttonText', e.target.value)}
-                    />
-                    <Button onClick={() => handleSave('CTA')} loading={isSaving} variant="primary" size="sm">
-                      Update CTA
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {/* Home Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-primary to-secondary p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="Home" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">Home Page</h3>
+                          <p className="text-blue-100 text-sm">Main landing page</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Hero Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.home?.heroTitle || content.hero.title}
+                          onChange={(e) => handlePageContentChange('home', 'heroTitle', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Hero Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.home?.heroDescription || content.hero.description}
+                          onChange={(e) => handlePageContentChange('home', 'heroDescription', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('home')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* About Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="Users" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">About Page</h3>
+                          <p className="text-purple-100 text-sm">Company information</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.about.title}
+                          onChange={(e) => handleContentChange('about', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.about.description}
+                          onChange={(e) => handleContentChange('about', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSave('About')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-green-500 to-green-600 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="Phone" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">Contact Page</h3>
+                          <p className="text-green-100 text-sm">Contact information & form</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Phone Number</label>
+                        <input
+                          type="text"
+                          value={content.contact.phone}
+                          onChange={(e) => handleContentChange('contact', 'phone', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Email Address</label>
+                        <input
+                          type="email"
+                          value={content.contact.email}
+                          onChange={(e) => handleContentChange('contact', 'email', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSave('Contact')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Services Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="Settings" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">Services Page</h3>
+                          <p className="text-indigo-100 text-sm">Service offerings overview</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.services?.title || 'Digital Marketing Services'}
+                          onChange={(e) => handlePageContentChange('services', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.services?.description || 'Comprehensive digital marketing solutions designed to grow your business.'}
+                          onChange={(e) => handlePageContentChange('services', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('services')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* SEO Optimization Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="Search" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">SEO Optimization</h3>
+                          <p className="text-blue-100 text-sm">Search engine optimization</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.seo?.title || 'SEO Optimization Services'}
+                          onChange={(e) => handlePageContentChange('seo', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Meta Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.seo?.description || 'Dominate search engine results with our comprehensive SEO strategies.'}
+                          onChange={(e) => handlePageContentChange('seo', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('seo')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* PPC Management Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-green-600 to-green-700 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="MousePointer" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">PPC Management</h3>
+                          <p className="text-green-100 text-sm">Pay-per-click advertising</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.ppc?.title || 'PPC Management Services'}
+                          onChange={(e) => handlePageContentChange('ppc', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.ppc?.description || 'Maximize your ROI with expertly managed pay-per-click campaigns.'}
+                          onChange={(e) => handlePageContentChange('ppc', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('ppc')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Web Design Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="Palette" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">Web Design</h3>
+                          <p className="text-purple-100 text-sm">Web design & development</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.webDesign?.title || 'Web Design & Development'}
+                          onChange={(e) => handlePageContentChange('webDesign', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.webDesign?.description || 'Create stunning, conversion-focused websites that provide exceptional user experiences.'}
+                          onChange={(e) => handlePageContentChange('webDesign', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('webDesign')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content Marketing Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-orange-600 to-orange-700 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="FileText" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">Content Marketing</h3>
+                          <p className="text-orange-100 text-sm">Content strategy & creation</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.contentMarketing?.title || 'Content Marketing Services'}
+                          onChange={(e) => handlePageContentChange('contentMarketing', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.contentMarketing?.description || 'Engage your audience with compelling content that builds brand authority.'}
+                          onChange={(e) => handlePageContentChange('contentMarketing', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('contentMarketing')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Media Marketing Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-pink-600 to-pink-700 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="Share2" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">Social Media</h3>
+                          <p className="text-pink-100 text-sm">Social media marketing</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.socialMedia?.title || 'Social Media Marketing'}
+                          onChange={(e) => handlePageContentChange('socialMedia', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.socialMedia?.description || 'Build meaningful connections with your audience through strategic social media marketing.'}
+                          onChange={(e) => handlePageContentChange('socialMedia', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('socialMedia')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Analytics & Reporting Page */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-lg">
+                          <ApperIcon name="BarChart" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">Analytics</h3>
+                          <p className="text-indigo-100 text-sm">Analytics & reporting</p>
+                        </div>
+                      </div>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Published</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Page Title</label>
+                        <input
+                          type="text"
+                          value={content.pages?.analytics?.title || 'Analytics & Reporting'}
+                          onChange={(e) => handlePageContentChange('analytics', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={3}
+                          value={content.pages?.analytics?.description || 'Make data-driven decisions with comprehensive analytics and performance reporting.'}
+                          onChange={(e) => handlePageContentChange('analytics', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <Button onClick={() => handleSavePage('analytics')} loading={isSaving} variant="primary" size="sm" className="flex-1">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonials & CTA Management */}
+              <div className="mt-8">
+                <h3 className="text-xl font-semibold text-gray-900 mb-6">Global Components</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Testimonials */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                      <ApperIcon name="MessageSquare" size={20} className="mr-2 text-primary" />
+                      Testimonials Management
+                    </h4>
+                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                      {content.testimonials.map((testimonial, index) => (
+                        <div key={testimonial.id} className="border border-gray-200 rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium text-sm">{testimonial.name}</span>
+                            <div className="flex space-x-1">
+                              <button className="text-blue-600 hover:text-blue-800">
+                                <ApperIcon name="Edit" size={14} />
+                              </button>
+                              <button className="text-red-600 hover:text-red-800">
+                                <ApperIcon name="Trash" size={14} />
+                              </button>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-600">{testimonial.company}</p>
+                          <p className="text-xs text-gray-700 mt-1">{testimonial.content.substring(0, 50)}...</p>
+                        </div>
+                      ))}
+                    </div>
+                    <Button variant="outline" size="sm" className="w-full mt-3">
+                      <ApperIcon name="Plus" size={14} className="mr-1" />
+                      Add Testimonial
                     </Button>
+                  </div>
+
+                  {/* CTA Section */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                      <ApperIcon name="Megaphone" size={20} className="mr-2 text-primary" />
+                      Call-to-Action Section
+                    </h4>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">CTA Title</label>
+                        <input
+                          type="text"
+                          value={content.cta.title}
+                          onChange={(e) => handleContentChange('cta', 'title', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Description</label>
+                        <textarea
+                          rows={2}
+                          value={content.cta.description}
+                          onChange={(e) => handleContentChange('cta', 'description', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">Button Text</label>
+                        <input
+                          type="text"
+                          value={content.cta.buttonText}
+                          onChange={(e) => handleContentChange('cta', 'buttonText', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <Button onClick={() => handleSave('CTA')} loading={isSaving} variant="primary" size="sm" className="w-full">
+                        <ApperIcon name="Save" size={14} className="mr-1" />
+                        Update CTA
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
