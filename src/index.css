@@ -168,9 +168,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Service card styling */
 .service-card {
-  @apply bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-primary/20 transition-all duration-300 group;
+  @apply bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-primary/20 transition-all duration-300;
 }
-
 .service-icon {
   @apply w-12 h-12 text-primary group-hover:text-secondary transition-colors duration-300;
 }
