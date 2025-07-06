@@ -891,9 +891,11 @@ onClick={() => {
                           title="Delete Media"
                         >
                           <ApperIcon name="Trash" size={16} />
+<ApperIcon name="Trash" size={16} />
                         </button>
                       </div>
                     </div>
+                  </div>
                 ))}
               </div>
             </motion.div>
