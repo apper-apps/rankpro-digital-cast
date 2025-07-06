@@ -1,9 +1,38 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
 import ContactForm from '@/components/organisms/ContactForm';
+import Loading from '@/components/ui/Loading';
+import Error from '@/components/ui/Error';
+import contentService from '@/services/api/contentService';
+
 const PpcManagement = () => {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadContent();
+  }, []);
+
+  const loadContent = async () => {
+    try {
+      setLoading(true);
+      const pageContent = await contentService.getPageContent('ppc');
+      setContent(pageContent);
+    } catch (err) {
+      setError('Failed to load content');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <Loading />;
+  if (error) return <Error message={error} />;
+  if (!content) return <Error message="Content not found" />;
+
   const features = [
     {
       icon: 'Target',
@@ -79,11 +108,11 @@ const PpcManagement = () => {
               <div className="bg-white/10 backdrop-blur-sm w-20 h-20 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
 <ApperIcon name="MousePointer" size={40} className="text-white" />
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                PPC Management Services
+<h1 className="text-4xl md:text-6xl font-bold mb-6">
+                {content.title}
               </h1>
               <p className="text-xl text-green-100 mb-8 max-w-2xl lg:max-w-none">
-                Maximize your ROI with expertly managed pay-per-click campaigns across Google Ads, Facebook, and other platforms.
+                {content.description}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button size="lg" variant="accent" className="flex items-center gap-2">

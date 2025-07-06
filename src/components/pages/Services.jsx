@@ -1,17 +1,43 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
 import ContactForm from '@/components/organisms/ContactForm';
+import Loading from '@/components/ui/Loading';
+import Error from '@/components/ui/Error';
+import contentService from '@/services/api/contentService';
 
 const Services = () => {
   const location = useLocation();
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Scroll to top when component mounts or location changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location]);
+
+  useEffect(() => {
+    loadContent();
+  }, []);
+
+  const loadContent = async () => {
+    try {
+      setLoading(true);
+      const pageContent = await contentService.getPageContent('services');
+      setContent(pageContent);
+    } catch (err) {
+      setError('Failed to load content');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <Loading />;
+  if (error) return <Error message={error} />;
+  if (!content) return <Error message="Content not found" />;
 const services = [
     {
       icon: 'Search',
@@ -139,12 +165,11 @@ const services = [
               transition={{ duration: 0.8 }}
               className="text-center lg:text-left"
             >
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                Digital Marketing Services
+<h1 className="text-4xl md:text-6xl font-bold mb-6">
+                {content.title}
               </h1>
               <p className="text-xl text-blue-100 mb-8 max-w-2xl lg:max-w-none">
-                Comprehensive digital marketing solutions designed to grow your business, 
-                increase your online presence, and drive measurable results.
+                {content.description}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto lg:mx-0">
                 <div className="text-center lg:text-left">

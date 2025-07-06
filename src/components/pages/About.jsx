@@ -1,8 +1,35 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
+import Loading from '@/components/ui/Loading';
+import Error from '@/components/ui/Error';
+import contentService from '@/services/api/contentService';
 
 const About = () => {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadContent();
+  }, []);
+
+  const loadContent = async () => {
+    try {
+      setLoading(true);
+      const pageContent = await contentService.getPageContent('about');
+      setContent(pageContent);
+    } catch (err) {
+      setError('Failed to load content');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <Loading />;
+  if (error) return <Error message={error} />;
+  if (!content) return <Error message="Content not found" />;
   const teamMembers = [
     {
       name: 'Alex Johnson',
@@ -75,12 +102,11 @@ const About = () => {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              About RankPro Digital
+<h1 className="text-4xl md:text-6xl font-bold mb-6">
+              {content.title}
             </h1>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              We're passionate about helping businesses grow through strategic digital marketing. 
-              Our team of experts delivers results that matter.
+              {content.description}
             </p>
           </motion.div>
         </div>
